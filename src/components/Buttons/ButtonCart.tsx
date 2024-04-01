@@ -19,6 +19,7 @@ interface ListItemProps {
   filter: boolean;
   text?: number | string;
   onClick?: () => void;
+  type?: "submit" | "button" | "reset";
 }
 
 const ButtonCart: React.FC<ListItemProps> = ({
@@ -29,6 +30,7 @@ const ButtonCart: React.FC<ListItemProps> = ({
   filter,
   text,
   icon: Icon,
+  type = "button",
   ...props
 }) => {
   return (
@@ -37,12 +39,15 @@ const ButtonCart: React.FC<ListItemProps> = ({
         backgroundColor={backgroundColor}
         size={size}
         border={border}
+        type={type}
         {...props}
       >
-        <IconWrapper size={size} color={color}>
-          {Icon && <Icon />}
-        </IconWrapper>
-        {text !== "" && (
+        {Icon && (
+          <IconWrapper size={size} color={color}>
+            {Icon && <Icon />}
+          </IconWrapper>
+        )}
+        {text && (
           <ListItemText
             backgroundColor={backgroundColor}
             size={size}

@@ -48,19 +48,33 @@ const OptionStyled = styled.div`
 `;
 
 
-const Select = ({ options, placeholder, active,disabled,  ...props }: any) => {
-  const [selected, setSelected] = useState("");
+const Select = ({ options, placeholder, onChange, value, active, disabled }: any) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleSelect = (selectedValue: any) => {
+    onChange(selectedValue); 
+    setShowDropdown(false); 
+  };
+  
 
   return (
     <DropdownContainer>
-      <DropdownButton active={active} disabled={disabled}{...props}>{selected || placeholder}<FaCaretDown /></DropdownButton>
-      <DropdownContent disabled={disabled}>
-        {options.map((option: any) => (
-          <OptionStyled key={option.value} onClick={() => setSelected(option.label)}>
-            {option.label}
-          </OptionStyled>
-        ))}
-      </DropdownContent>
+      <DropdownButton 
+        active={active} 
+        disabled={disabled}
+        onClick={() => setShowDropdown(!showDropdown)}>
+        {value || placeholder}
+        <FaCaretDown />
+      </DropdownButton>
+      {showDropdown && (
+        <DropdownContent>
+          {options.map((option:any) => (
+            <OptionStyled key={option.value} onClick={() => handleSelect(option.value)}>
+              {option.value}
+            </OptionStyled>
+          ))}
+        </DropdownContent>
+      )}
     </DropdownContainer>
   );
 };

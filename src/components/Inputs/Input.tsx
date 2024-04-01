@@ -13,7 +13,7 @@ const InputStyled = styled.input<Props>`
   font-size: 16px;
 
   &:focus {
-    /* border-color: blue; */
+    border-color:#2797BA;
     outline: none;
   }
 `;

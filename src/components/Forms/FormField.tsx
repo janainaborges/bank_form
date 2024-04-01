@@ -8,30 +8,40 @@ import Input from "../Inputs/Input";
 import { schemaStepOne } from "@/utils/schemaStepOne";
 import { cep_mask, cpf_mask, phone_mask } from "@/utils/masks";
 import { BoxForm, ContainerForm, Label, RedAsterisk } from "./Form.styles";
+import { updateFormData } from "@/provider/slices/formSlice";
 
 const occupationalData: any[] = [
   { value: 1, label: "Valor 1" },
 ];
 const bankData: any[] = [
-  { value: 1, label: "Banco do Brasil" },
-  { value: 2, label: "Bradesco" },
-  { value: 3, label: "Itau" },
+  { value: "Banco do Brasil" },
+  { value: "Bradesco" },
+  { value: "Itau" },
 ];
 const accountData: any[] = [
-  { value: 1, label: "Conta corrente" },
-  { value: 2, label: "Poupança" },
+  { value: "Conta corrente" },
+  { value: "Poupança" },
 ];
-
-interface FormFieldI {
+const personData: any[] = [
+  { value:  "Pessoa Física" },
+  { value:  "Pessoa Jurídica" },
+];
+const stateData: any[] = [
+  { value:  "Acre" },
+  { value:  "Minas Gerais" },
+  { value:  "Distrito Federal" },
+];
+interface FormFieldProps {
   onNextStep: () => void;
-  setIsFormValid: any;
+  setIsFormValid: (isValid: boolean) => void;
+  formRef: React.RefObject<HTMLFormElement>; 
 }
-const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElement> }> = ({ onNextStep, setIsFormValid, formRef}) => {
+const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormElement> }> = ({ onNextStep, setIsFormValid, formRef}) => {
   const [occupationalValue, setOccupationalValue] = useState("");
+  const [bankValue, setBankValue] = useState("");
+  const [accountValue, setAccountValue] = useState("");
 
-  if (!occupationalValue && occupationalData.length > 0) {
-    setOccupationalValue(occupationalData[0]);
-  }
+
   const {
     control,
     handleSubmit,
@@ -40,10 +50,15 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
     resolver: zodResolver(schemaStepOne),
   });
 
-  const onSubmit = (data: any) => {
-    setIsFormValid(schemaStepOne);
-    onNextStep;
-    console.log(data);
+  const onSubmit = (data: Record<string, any>, e: any) => {
+    console.log(data, "cdcecedcecedcec");
+    if (e) {
+      setIsFormValid(false);
+    } else {
+      setIsFormValid(true);
+      onNextStep();
+      dispatch(updateFormData(data));
+    }
   };
 
   return (
@@ -79,15 +94,16 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
           </span>
 
           <Controller
-            name="cpf"
+            name="bank"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <Select
+                {...field}
                 options={bankData}
-                value={occupationalValue}
-                onChange={setOccupationalValue}
-                placeholder="Selecione uma profissional"
+                onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                placeholder="Selecione um banco"
+                active={errors.bank}
               />
             )}
           />
@@ -98,11 +114,19 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
             Tipo de conta:<RedAsterisk>*</RedAsterisk>
           </span>
 
-          <Select
-            options={accountData}
-            value={occupationalValue}
-            onChange={setOccupationalValue}
-            placeholder="Selecione uma profissional"
+          <Controller
+            name="account"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <Select
+                options={accountData}
+                {...field}
+                onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                placeholder="Selecione um banco"
+                active={errors.account}
+              />
+            )}
           />
         </Label>
       </BoxForm>
@@ -133,15 +157,15 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
           </span>
 
           <Controller
-            name="cpf"
+            name="tag"
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <Select
-                options={occupationalData}
-                value={occupationalValue}
-                onChange={setOccupationalValue}
-                placeholder="Selecione uma profissional"
+              <Input
+              active={undefined} {...field}
+              setValue={field.onChange}
+              placeholder="Digite aqui"
+              type="number"    
               />
             )}
           />
@@ -153,15 +177,16 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
             Tipo de pessoa:<RedAsterisk>*</RedAsterisk>
           </span>
           <Controller
-            name="cpf"
+            name="person"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <Select
-                options={occupationalData}
-                value={occupationalValue}
-                onChange={setOccupationalValue}
-                placeholder="Selecione uma profissional"
+              {...field}
+              onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                active={errors.person}
+                options={personData}
+                placeholder="Selecione..."
               />
             )}
           />
@@ -169,7 +194,7 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
 
         <Label>
           <span>
-            CPF Suplente:<RedAsterisk>*</RedAsterisk>
+            CPF:<RedAsterisk>*</RedAsterisk>
           </span>
           <Controller
             name="cpf"
@@ -181,6 +206,7 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
                 setValue={field.onChange}
                 formatValue={cpf_mask}
                 active={errors.cpf}
+                placeholder="000.000.000-00"
               />
             )}
           />
@@ -202,6 +228,7 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
                 formatValue={phone_mask}
                 maxLength={16}
                 active={errors.phone}
+                placeholder="(00)0.0000-0000"
               />
             )}
           />
@@ -212,7 +239,6 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
           <span>
             Nome completo:<RedAsterisk>*</RedAsterisk>
           </span>
-
           <Controller
             name="fullname"
             control={control}
@@ -243,7 +269,7 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
               <Input
                 {...field}
                 setValue={field.onChange}
-                placeholder="Digite o CEP"
+                placeholder="00000-000"
                 formatValue={cep_mask}
                 active={errors.cep}
               />
@@ -256,15 +282,16 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
           </span>
 
           <Controller
-            name="cpf"
+            name="state"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <Select
-                options={occupationalData}
-                value={occupationalValue}
-                onChange={setOccupationalValue}
-                placeholder="Selecione uma profissional"
+              {...field}
+              onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                active={errors.state}
+                options={stateData}
+                placeholder="Selecione..."
               />
             )}
           />
@@ -282,9 +309,8 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
               <Input
                 {...field}
                 setValue={field.onChange}
-                placeholder="Digite a cidade"
-                formatValue={cep_mask}
-                active={errors.cep}
+                placeholder="Digite aqui"
+                active={errors.city}
               />
             )}
           />
@@ -294,20 +320,19 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
       <BoxForm>
         <Label>
           <span>
-            Endereço:<RedAsterisk>*</RedAsterisk>
+          Endereço:<RedAsterisk>*</RedAsterisk>
           </span>
 
           <Controller
-            name="city"
+            name="Address"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <Input
                 {...field}
                 setValue={field.onChange}
-                placeholder="Digite a cidade"
-                formatValue={cep_mask}
-                active={errors.cep}
+                placeholder="Digite aqui"
+                active={errors.Address}
               />
             )}
           />
@@ -318,22 +343,26 @@ const FormField: React.FC<FormFieldI & { formRef: React.RefObject<HTMLFormElemen
           </span>
 
           <Controller
-            name="city"
+            name="number"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <Input
                 {...field}
                 setValue={field.onChange}
-                placeholder="Digite a cidade"
-                formatValue={cep_mask}
-                active={errors.cep}
+                placeholder="Digite aqui"
+                active={errors.number}
               />
             )}
           />
         </Label>
       </BoxForm>
+      <button type="submit">ok </button>
     </ContainerForm>
   );
 };
 export default FormField;
+function dispatch(arg0: { payload: Record<string, any>; type: "form/updateFormData"; }) {
+  throw new Error("Function not implemented.");
+}
+

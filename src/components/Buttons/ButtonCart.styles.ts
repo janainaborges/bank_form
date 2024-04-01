@@ -25,13 +25,13 @@ export const ButtonCustoms = styled.button<ButtonCustomsProps>`
   flex-direction: row;
   padding: 8px;
   gap: 7px;
-  color: ${colors.light};
+  color: #ccc;
   justify-content: space-around;
   place-items: center;
   font-size: ${(props: any) =>
-    (props.size === "small" && "6px") ||
-    (props.size === "medium" && "8px") ||
-    (props.size === "large" && "12px")};
+    (props.size === "small" && "10px") ||
+    (props.size === "medium" && "12px") ||
+    (props.size === "large" && "14px")};
 
   @media (max-width: 768px) {
     width: ${(props: any) =>

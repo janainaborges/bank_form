@@ -6,9 +6,10 @@ import { CgClose } from "react-icons/cg";
 import FormField from "../Forms/FormField";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFormData } from "@/provider/slices/formSlice";
-import { BoxContainer, BoxLabel, Circle, CircleContainer, CloseButton, Header, ModalBackdrop, ModalContainer, ProgressContainer, Step, StepLabel, SubTitle, Title } from "./Modal.styles";
+import { Box, BoxContainer, BoxLabel, Circle, CircleContainer, CloseButton, Header, ModalBackdrop, ModalContainer, ProgressContainer, Step, StepLabel, SubTitle, Title } from "./Modal.styles";
 import FormEmail from "../Forms/FormEmail";
 import FormActive from "../Forms/FormActive";
+import ButtonCart from "../Buttons/ButtonCart";
 
 const ProgressBox = ({ steps, currentStep }: any) => {
   return (
@@ -24,23 +25,23 @@ const ProgressBox = ({ steps, currentStep }: any) => {
 };
 
 const Modal = ({ isOpen, onClose }: any) => {
+  const formRef = useRef(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isCurrentFormValid, setIsCurrentFormValid] = useState(false);
-  const dispatch = useDispatch(); 
 
+  
   const stepsComponents = [
     FormField, FormEmail, FormActive
   ];
 
 
   if (!isOpen) return null;
-  const formRef = useRef(null);
-
+  
   const handleSubmit = () => {
-    if (formRef.current) {
-      formRef.current.submit(); // Isso aciona o envio do formulário
-    }
+    formRef?.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    console.log(formRef)
   };
+  
   const CurrentStepComponent = stepsComponents[currentStep];
 
   const steps = [
@@ -50,10 +51,13 @@ const Modal = ({ isOpen, onClose }: any) => {
   ];
 
   const nextStep = () => {
+    
     if (isCurrentFormValid) {
       setCurrentStep(currentStep => currentStep + 1);
       setIsCurrentFormValid(false); 
     } else {
+      handleSubmit()
+
       alert('Por favor, complete todos os campos necessários antes de prosseguir.');
     }
   };
@@ -92,15 +96,17 @@ const Modal = ({ isOpen, onClose }: any) => {
               </BoxLabel>
             ))}
           </BoxContainer>
-          <CurrentStepComponent onNextStep={() => nextStep} setIsFormValid={setIsCurrentFormValid} />
+          <CurrentStepComponent onNextStep={() => nextStep} setIsFormValid={setIsCurrentFormValid} formRef={formRef} />
 
         </div>
+        <Box>
         {currentStep < steps.length + 1 && (
-          <button onClick={prevStep} >prev</button>
+          <ButtonCart onClick={prevStep} filter={false} text={"Cancelar"} size={"large"} backgroundColor="none" border="#2797BA" color="#2797BA"/>
         )}
         {currentStep < steps.length + 1 && (
-          <button onClick={nextStep} type="submit">Next</button>
+          <ButtonCart onClick={nextStep} type="submit" text={"Próximo"} filter={false} size={"large"}color="white" backgroundColor="#2797BA" border="#2797BA" />
         )}
+         </Box>
       </ModalContainer>
     </ModalBackdrop>
   );

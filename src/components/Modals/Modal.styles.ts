@@ -101,6 +101,17 @@ export const BoxContainer = styled.div`
   padding: 20px;
 `;
 
+export const Box = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: flex-end;
+  padding: 0 10px;
+  width: 100%;
+  gap: 10px;
+  padding: 20px;
+`;
+
 export const BoxLabel = styled.ul`
   margin-top: 8px;
   font-size: 12px;
