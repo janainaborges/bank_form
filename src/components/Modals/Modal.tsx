@@ -4,9 +4,20 @@
 import React, { useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import FormField from "../Forms/FormField";
-import { useDispatch, useSelector } from "react-redux";
-import { updateFormData } from "@/provider/slices/formSlice";
-import { Box, BoxContainer, BoxLabel, Circle, CircleContainer, CloseButton, Header, ModalBackdrop, ModalContainer, ProgressContainer, Step, StepLabel, SubTitle, Title } from "./Modal.styles";
+
+import {
+  Box,
+  Circle,
+  CircleContainer,
+  CloseButton,
+  Header,
+  ModalBackdrop,
+  ModalContainer,
+  ProgressContainer,
+  Step,
+  StepLabel,
+  Title,
+} from "./Modal.styles";
 import FormEmail from "../Forms/FormEmail";
 import FormActive from "../Forms/FormActive";
 import ButtonCart from "../Buttons/ButtonCart";
@@ -29,19 +40,18 @@ const Modal = ({ isOpen, onClose }: any) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isCurrentFormValid, setIsCurrentFormValid] = useState(false);
 
-  
-  const stepsComponents = [
-    FormField, FormEmail, FormActive
-  ];
-
+  const stepsComponents = [ FormField,FormEmail , FormActive];
 
   if (!isOpen) return null;
-  
+
   const handleSubmit = () => {
-    formRef?.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    console.log(formRef)
+    formRef?.current?.dispatchEvent(
+      new Event("submit", { cancelable: true, bubbles: true })
+    );
+    console.log(formRef?.current);
+    setIsCurrentFormValid(formRef?.current ? true : false);
   };
-  
+
   const CurrentStepComponent = stepsComponents[currentStep];
 
   const steps = [
@@ -51,25 +61,19 @@ const Modal = ({ isOpen, onClose }: any) => {
   ];
 
   const nextStep = () => {
-    
     if (isCurrentFormValid) {
-      setCurrentStep(currentStep => currentStep + 1);
-      setIsCurrentFormValid(false); 
+      setCurrentStep((currentStep) => currentStep + 1);
+      setIsCurrentFormValid(false);
     } else {
-      handleSubmit()
+      handleSubmit();
 
-      alert('Por favor, complete todos os campos necessários antes de prosseguir.');
+      alert(
+        "Por favor, complete todos os campos necessários antes de prosseguir."
+      );
     }
   };
 
   const prevStep = () => setCurrentStep((currentStep) => currentStep - 1);
-
-  
-  const stepLabel = [
-    { label: "Caso queira cadastrar uma conta de banco CNPJ, verifique se a sua conta corrente é CNPJ e preencha o CPF correto do responsável da conta." },
-    { label: "O preenchimento incorreto das informações pode trazer transtornos no momento da transferência do valor para essa conta corrente." },
-    { label: "Se possível preencha com calma para não ocorrer erros." },
-  ];
 
   return (
     <ModalBackdrop onClick={onClose}>
@@ -87,26 +91,37 @@ const Modal = ({ isOpen, onClose }: any) => {
           ))}
         </CircleContainer>
         <div>
-          <Title>Preencha os itens a seguir para configurar o PsicoBank</Title>
-          <BoxContainer>
-            <SubTitle>Atenção!!! Verifique atentamente a cada dado preenchido no cadastro de sua conta.</SubTitle>
-            {stepLabel.map((el: any) => (
-              <BoxLabel key={el.label}>
-                <li>{el.label}</li>
-              </BoxLabel>
-            ))}
-          </BoxContainer>
-          <CurrentStepComponent onNextStep={() => nextStep} setIsFormValid={setIsCurrentFormValid} formRef={formRef} />
-
+          <CurrentStepComponent
+            onNextStep={() => nextStep}
+            setIsFormValid={setIsCurrentFormValid}
+            formRef={formRef}
+          />
         </div>
         <Box>
-        {currentStep < steps.length + 1 && (
-          <ButtonCart onClick={prevStep} filter={false} text={"Cancelar"} size={"large"} backgroundColor="none" border="#2797BA" color="#2797BA"/>
-        )}
-        {currentStep < steps.length + 1 && (
-          <ButtonCart onClick={nextStep} type="submit" text={"Próximo"} filter={false} size={"large"}color="white" backgroundColor="#2797BA" border="#2797BA" />
-        )}
-         </Box>
+          {currentStep < steps.length + 1 && (
+            <ButtonCart
+              onClick={prevStep}
+              filter={false}
+              text={"Cancelar"}
+              size={"large"}
+              backgroundColor="none"
+              border="#2797BA"
+              color="#2797BA"
+            />
+          )}
+          {currentStep < steps.length + 1 && (
+            <ButtonCart
+              onClick={nextStep}
+              type="submit"
+              text={"Próximo"}
+              filter={false}
+              size={"large"}
+              color="white"
+              backgroundColor="#2797BA"
+              border="#2797BA"
+            />
+          )}
+        </Box>
       </ModalContainer>
     </ModalBackdrop>
   );

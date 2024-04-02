@@ -9,6 +9,7 @@ const Container = styled.div`
   border: 1px solid #ccc;
   padding: 16px;
   border-radius: 8px;
+  width: 100%;
 `;
 
 const TextEditor = () => {

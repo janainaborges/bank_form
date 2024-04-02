@@ -5,8 +5,8 @@ const colors = {
     dark: "#0B1F4D",
     gray: "#CED2DB",
     success: '#219653',
-    danger: '#f6e5e5',
-    blueDark: '#3C4C70',
+    blueLight: '#ECF5FE',
+    blueDark: '#2196F3',
     yellow: '#CCB400'
 };
 

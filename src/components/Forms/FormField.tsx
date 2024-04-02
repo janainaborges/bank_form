@@ -7,41 +7,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../Inputs/Input";
 import { schemaStepOne } from "@/utils/schemaStepOne";
 import { cep_mask, cpf_mask, phone_mask } from "@/utils/masks";
-import { BoxForm, ContainerForm, Label, RedAsterisk } from "./Form.styles";
+import { Box, BoxForm, BoxLabel, ContainerForm, Label, RedAsterisk, SubTitle, Title } from "./Form.styles";
 import { updateFormData } from "@/provider/slices/formSlice";
+import { useDispatch } from "react-redux";
+import {
+  accountData,
+  bankData,
+  occupationalData,
+  personData,
+  stateData,
+  stepLabel,
+} from "@/shared/mock";
 
-const occupationalData: any[] = [
-  { value: 1, label: "Valor 1" },
-];
-const bankData: any[] = [
-  { value: "Banco do Brasil" },
-  { value: "Bradesco" },
-  { value: "Itau" },
-];
-const accountData: any[] = [
-  { value: "Conta corrente" },
-  { value: "Poupança" },
-];
-const personData: any[] = [
-  { value:  "Pessoa Física" },
-  { value:  "Pessoa Jurídica" },
-];
-const stateData: any[] = [
-  { value:  "Acre" },
-  { value:  "Minas Gerais" },
-  { value:  "Distrito Federal" },
-];
 interface FormFieldProps {
   onNextStep: () => void;
-  setIsFormValid: (isValid: boolean) => void;
-  formRef: React.RefObject<HTMLFormElement>; 
 }
-const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormElement> }> = ({ onNextStep, setIsFormValid, formRef}) => {
+
+const FormField: React.FC<
+  FormFieldProps & { formRef: React.RefObject<HTMLFormElement> }
+> = ({ onNextStep, formRef }) => {
+  const dispatch = useDispatch();
+
   const [occupationalValue, setOccupationalValue] = useState("");
-  const [bankValue, setBankValue] = useState("");
-  const [accountValue, setAccountValue] = useState("");
-
-
   const {
     control,
     handleSubmit,
@@ -50,15 +37,9 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
     resolver: zodResolver(schemaStepOne),
   });
 
-  const onSubmit = (data: Record<string, any>, e: any) => {
-    console.log(data, "cdcecedcecedcec");
-    if (e) {
-      setIsFormValid(false);
-    } else {
-      setIsFormValid(true);
-      onNextStep();
-      dispatch(updateFormData(data));
-    }
+  const onSubmit = (data: Record<string, any>) => {
+    dispatch(updateFormData(data));
+    onNextStep();
   };
 
   return (
@@ -70,8 +51,20 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
         flexDirection: "column",
         margin: "1rem 0.4rem",
       }}
-      ref={formRef} 
+      ref={formRef}
     >
+      <Title>Preencha os itens a seguir para configurar o PsicoBank</Title>
+      <Box>
+        <SubTitle>
+          Atenção!!! Verifique atentamente a cada dado preenchido no cadastro de
+          sua conta.
+        </SubTitle>
+        {stepLabel.map((el: any) => (
+          <BoxLabel key={el.label}>
+            <li>{el.label}</li>
+          </BoxLabel>
+        ))}
+      </Box>
       <BoxForm>
         <Label>
           <span>
@@ -101,7 +94,9 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
               <Select
                 {...field}
                 options={bankData}
-                onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                onChange={(selectedOption: any) =>
+                  field.onChange(selectedOption)
+                }
                 placeholder="Selecione um banco"
                 active={errors.bank}
               />
@@ -122,7 +117,9 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
               <Select
                 options={accountData}
                 {...field}
-                onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                onChange={(selectedOption: any) =>
+                  field.onChange(selectedOption)
+                }
                 placeholder="Selecione um banco"
                 active={errors.account}
               />
@@ -162,10 +159,11 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
             defaultValue=""
             render={({ field }) => (
               <Input
-              active={undefined} {...field}
-              setValue={field.onChange}
-              placeholder="Digite aqui"
-              type="number"    
+                active={undefined}
+                {...field}
+                setValue={field.onChange}
+                placeholder="Digite aqui"
+                type="number"
               />
             )}
           />
@@ -182,8 +180,10 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
             defaultValue=""
             render={({ field }) => (
               <Select
-              {...field}
-              onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                {...field}
+                onChange={(selectedOption: any) =>
+                  field.onChange(selectedOption)
+                }
                 active={errors.person}
                 options={personData}
                 placeholder="Selecione..."
@@ -287,8 +287,10 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
             defaultValue=""
             render={({ field }) => (
               <Select
-              {...field}
-              onChange={(selectedOption: any) => field.onChange(selectedOption)}
+                {...field}
+                onChange={(selectedOption: any) =>
+                  field.onChange(selectedOption)
+                }
                 active={errors.state}
                 options={stateData}
                 placeholder="Selecione..."
@@ -320,7 +322,7 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
       <BoxForm>
         <Label>
           <span>
-          Endereço:<RedAsterisk>*</RedAsterisk>
+            Endereço:<RedAsterisk>*</RedAsterisk>
           </span>
 
           <Controller
@@ -357,12 +359,7 @@ const FormField: React.FC<FormFieldProps & { formRef: React.RefObject<HTMLFormEl
           />
         </Label>
       </BoxForm>
-      <button type="submit">ok </button>
     </ContainerForm>
   );
 };
 export default FormField;
-function dispatch(arg0: { payload: Record<string, any>; type: "form/updateFormData"; }) {
-  throw new Error("Function not implemented.");
-}
-

@@ -15,7 +15,6 @@ const NavBar = () => {
         <PiMetaLogo fontSize={30} /> SuaLogo
       </Start>
       <End>
-        <span>Cotação dólar hoje: R$5,53</span>
         <ButtonCart
           text={""}
           icon={IoIosHelpCircleOutline}

@@ -36,11 +36,6 @@ export const Title = styled.h1`
   font-size: x-large;
 `;
 
-export const SubTitle = styled.h1`
-  font-size: x-large;
-  color: ${colors.yellow};
-`;
-
 export const CloseButton = styled.button`
   float: right;
   background: none;
@@ -91,16 +86,6 @@ export const StepLabel = styled.div`
   text-align: center;
 `;
 
-export const BoxContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  padding: 0 10px;
-  width: 100%;
-  background-color: ${colors.yellowLight};
-  padding: 20px;
-`;
-
 export const Box = styled.div`
   display: flex;
   flex-direction: row;
@@ -110,18 +95,4 @@ export const Box = styled.div`
   width: 100%;
   gap: 10px;
   padding: 20px;
-`;
-
-export const BoxLabel = styled.ul`
-  margin-top: 8px;
-  font-size: 12px;
-  color: #333;
-  text-align: start;
-  word-wrap: break-word;
-  padding: 0 20px;
-
-  li {
-    list-style: outside;
-    color: ${colors.yellow};
-  }
 `;
